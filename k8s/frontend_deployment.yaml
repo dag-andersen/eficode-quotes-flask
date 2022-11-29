@@ -1,19 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     app: frontend
   name: frontend
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: frontend
-  strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: frontend
     spec:
@@ -41,5 +37,3 @@ spec:
                 configMapKeyRef:
                   name: backend-config
                   key: backend_port
-
-status: {}

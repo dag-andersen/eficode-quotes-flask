@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     app: postgres
   name: postgres
@@ -10,10 +9,8 @@ spec:
   selector:
     matchLabels:
       app: postgres
-  strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: postgres
     spec:
@@ -22,7 +19,6 @@ spec:
           name: postgres
           ports:
             - containerPort: 5432
-          resources: {}
           ### Using hardcoded env vars
           # env:
           # - name: POSTGRES_USER
@@ -48,4 +44,3 @@ spec:
                 configMapKeyRef:
                   name: postgres-config
                   key: db_name
-status: {}

@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     app: backend
   name: backend
@@ -13,7 +12,6 @@ spec:
   strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: backend
     spec:
@@ -22,7 +20,6 @@ spec:
           name: flask-quotes-backend
           ports:
             - containerPort: 5000
-          resources: {}
           ### using hardcoded env vars
           # env:
           # - name: db_host
