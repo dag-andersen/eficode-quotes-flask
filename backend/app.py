@@ -110,6 +110,11 @@ def add_quote():
     return "Could not parse quote", 500
 
 
+@app.route("/")
+def index():
+    return "Hello from the backend!"
+
+
 @app.route("/quotes")
 def quotes():
     """return all quotes as JSON"""
