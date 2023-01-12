@@ -99,19 +99,21 @@
                     <td>Name</td>
                     <td>Hostname</td>
                     <td>Online</td>
+                    <td>Version</td>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  <tr id="frontend">
                     <td>Frontend</td>
                     <td>
                       <span class="badge bg-success" id="frontend_hostname">
                         {{ frontend_hostname }}</span
                       >
                     </td>
-                    <td><span class="badge bg-success">connected</span></td>
+                    <td><span class="badge bg-success">Connected</span></td>
+                    <td><span class="badge bg-success" id="frontend_version" >Waiting for response</span></td>
                   </tr>
-                  <tr>
+                  <tr id="backend">
                     <td>Backend</td>
                     <td>
                       {% if backend %}
@@ -119,29 +121,37 @@
                         >{{ backend_hostname }}</span
                       >
                       {% else %}
-                      <span class="badge bg-secondary">no pod</span>
+                      <span class="badge bg-secondary">Unknown</span>
                       {% endif %}
                     </td>
                     <td>
                       {% if backend %}
-                      <span class="badge bg-success">connected</span>
+                      <span class="badge bg-success">Connected</span>
                       {% else %}
                       <span class="badge bg-secondary">no connection</span>
                       {% endif %}
                     </td>
+                    <td><span class="badge bg-success" id="backend_version" >Waiting for response</span></td>
                   </tr>
-                  <tr>
+                  <tr id="database">
                     <td>Database</td>
                     <td>
-                      <span class="badge bg-secondary">not implemented</span>
+                      {% if database %}
+                      <span class="badge bg-success" id="db_hostname"
+                        >{{ db_hostname }}</span
+                      >
+                      {% else %}
+                      <span class="badge bg-secondary">Unknown</span>
+                      {% endif %}
                     </td>
                     <td>
                       {% if database %}
-                      <span class="badge bg-success">connected</span>
+                      <span class="badge bg-success">Connected</span>
                       {% else %}
                       <span class="badge bg-secondary">no connection</span>
                       {% endif %}
                     </td>
+                    <td><span class="badge bg-success" id="database_version" >Waiting for response</span></td>
                   </tr>
                 </tbody>
               </table>
@@ -186,5 +196,8 @@
         </div>
       </div>
     </div>
+
+  </div>
   </body>
+
 </html>

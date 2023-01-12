@@ -1,7 +1,74 @@
-// get a single random quote and update the quotes container with contents
 function getRandomQuote() {
-  endpoint = "/random-quote";
-  xhttp = new XMLHttpRequest();
+  get("/random-quote");
+}
+
+function getAll() {
+  get_json("/quotes");
+}
+
+function getVersion(endpoint, element) {
+  make_call(endpoint, function () {
+    if (this.status == 200) {
+      var json = JSON.parse(this.responseText);
+      document.getElementById(element).innerHTML = json.version;
+    } else {
+      document.getElementById(element).innerHTML = "Error";
+    }
+  });
+}
+
+function getDatabaseVersion() {
+  getVersion("/database/version", "database_version");
+}
+
+function getBackendVersion() {
+  getVersion("/backend/version", "backend_version");
+}
+
+function getFrontendVersion() {
+  getVersion("/version", "frontend_version");
+}
+
+function make_call(endpoint, method) {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", endpoint, true);
+  xhr.timeout = 200;
+  xhr.onload = method;
+  xhr.send();
+}
+
+function getHostNames() {
+  var endpoint = "/hostname";
+  var xhttp = new XMLHttpRequest();
+  xhttp.onload = function () {
+    if (this.status == 200) {
+      var data = JSON.parse(this.responseText);
+      document.getElementById("backend_hostname").innerHTML = data.backend;
+      document.getElementById("frontend_hostname").innerHTML = data.frontend;
+      document.getElementById("db_hostname").innerHTML = data.postgres;
+    } else {
+      document.getElementById("backend_hostname").innerHTML = "Error response";
+      document.getElementById("frontend_hostname").innerHTML = "Error response";
+      document.getElementById("db_hostname").innerHTML = "Error response";
+    }
+  };
+  xhttp.open("GET", endpoint, true);
+  xhttp.timeout = 200;
+  xhttp.ontimeout = function (e) {
+    document.getElementById("backend_hostname").innerHTML = "Timeout";
+    document.getElementById("frontend_hostname").innerHTML = "Timeout";
+    document.getElementById("db_hostname").innerHTML = "Timeout";
+  };
+  xhttp.send();
+}
+var periodicUpdates = setInterval(function () {
+  getFrontendVersion();
+  getBackendVersion();
+  getDatabaseVersion();
+}, 1000);
+
+function get(endpoint) {
+  var xhttp = new XMLHttpRequest();
   xhttp.onload = function () {
     if (this.status == 200) {
       document.getElementById("quotes-container").innerHTML = this.responseText;
@@ -38,23 +105,9 @@ function getAllQuotes() {
   xhttp.send();
 }
 
-function getHostnames() {
-  endpoint = "/hostname";
-  xhttp = new XMLHttpRequest();
-  xhttp.onload = function () {
-    if (this.status == 200) {
-      data = JSON.parse(this.responseText);
-      document.getElementById("backend_hostname").innerHTML = data.backend;
-      document.getElementById("frontend_hostname").innerHTML = data.frontend;
-    }
-  };
-  xhttp.open("GET", endpoint, true);
-  xhttp.send();
-}
-
 // update the hostnames every second
 updatePodHostnames = setInterval(function () {
-  getHostnames();
+  getHostNames();
 }, 1000);
 
 function updatePodNameRow(name, rowId, podNames) {
@@ -89,8 +142,10 @@ function updatePodNameRowNoPodsFound(name, rowId) {
 function getPodNames() {
   endpoint = "/pod-names";
   xhttp = new XMLHttpRequest();
+  xhttp.timeout = 2000;
   xhttp.onload = function () {
     if (this.status == 200) {
+      console.log("Got reply with pod names");
       data = JSON.parse(this.responseText);
       // if there is a message, there are no pod names
       if ("message" in data) {
@@ -126,6 +181,10 @@ function getPodNames() {
           );
         }
       }
+    } else {
+      console.log("Did not get response from frontend.");
+      document.getElementById("application-status-message").innerHTML =
+        "Lost connection to frontend";
     }
   };
   xhttp.open("GET", endpoint, true);

@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,12 +25,12 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: postgres-config
-                  key: db_user
+                  key: DB_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: postgres-config
-                  key: db_password
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DB_PASSWORD
             - name: POSTGRES_DB
               valueFrom:
                 configMapKeyRef:
